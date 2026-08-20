@@ -57,3 +57,7 @@ Deployment target: Vercel / Next.js
 Commercialization engine: SHIPPED
 
 Further ingestion, repository analysis, ZIP ingestion, authentication, persistence, and commercialization workflow hardening can evolve without changing the core product promise.
+
+## QA checkpoint
+
+The current ship includes contextual explanations for key commercialization metrics and result sections. The production verification pass should confirm the live deployment is built from the latest main-branch commit before treating this UX checkpoint as live.
