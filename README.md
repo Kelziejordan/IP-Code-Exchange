@@ -1,11 +1,29 @@
-<div align="center">
+# IP Code Exchange — Commercialization Engine 4.2.0
 
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
+A deployable AI-assisted workflow for turning software and other technical IP into commercial opportunities.
 
-  <h1>Built with AI Studio</h2>
+Pipeline:
 
-  <p>The fastest path from prompt to production with Gemini.</p>
+IP asset -> analysis -> screening valuation -> licensing paths -> buyer categories -> outreach
 
-  <a href="https://aistudio.google.com/apps">Start building</a>
+## Run locally
 
-</div>
+```bash
+npm install
+npm run dev
+```
+
+Optional environment variables:
+
+```text
+OPENAI_API_KEY=
+OPENAI_MODEL=gpt-4o-mini
+```
+
+Without an OpenAI key, the application uses a deterministic screening fallback so the product remains demonstrable. With a key, the commercialization endpoint uses the configured OpenAI model.
+
+## Deploy
+
+This repository is Next.js/Vercel-ready. Import the repository into Vercel and add `OPENAI_API_KEY` for live AI analysis.
+
+The current 4.2.0 ship intentionally keeps the product surface small: one asset enters and a commercialization brief comes out. Buyer discovery is a lead-generation aid and requires human verification; valuation is a screening estimate, not a formal appraisal.
