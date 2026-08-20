@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 
-export function InfoTip({ title, children }: { title: string; children: React.ReactNode }) {
+export function InfoTip({ title, children }: { title: string; children: ReactNode }) {
   const [open, setOpen] = useState(false);
 
   return (
