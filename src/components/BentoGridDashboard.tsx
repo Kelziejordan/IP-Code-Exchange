@@ -376,7 +376,7 @@ export const BentoGridDashboard: React.FC<BentoGridDashboardProps> = ({
             </span>
             <button
               id="bento-inspect-governance-btn"
-              onClick={() => onNavigateTab('dashboard')}
+              onClick={() => onNavigateTab('intake')}
               className="text-xs text-blue-400 hover:text-blue-300 font-mono font-bold flex items-center gap-1 cursor-pointer flex-shrink-0"
             >
               <span>View Indicators</span>

@@ -187,13 +187,79 @@ export interface OutreachTemplate {
   disclaimer: string;
 }
 
+export type BuyerSource = 
+  | 'hubspot_crm' 
+  | 'salesforce_crm' 
+  | 'manual_entry' 
+  | 'csv_import' 
+  | 'consented_marketplace';
+
+export interface BuyerContact {
+  name: string;
+  title: string;
+  emailPlaceholder: string;
+  department?: string;
+  isPrimary?: boolean;
+}
+
+export interface BuyerSpendProfile {
+  maxAnnualSoftwareSpendUsd: number;
+  typicalDealCycleMonths: number;
+  procurementTier: 'TIER_1_ENTERPRISE' | 'TIER_2_MIDMARKET' | 'STRATEGIC_HYPERSCALE';
+}
+
+export interface BuyerRecord {
+  id: string;
+  companyName: string;
+  domain: string;
+  segment: string;
+  annualRevenueBand: string;
+  engineeringHeadcount: number;
+  techStack: string[];
+  preferredLicensingModels: ('percentage_of_savings' | 'per_node_per_month' | 'per_device_oem' | 'dual_source_royalty')[];
+  spendProfile: BuyerSpendProfile;
+  contacts: BuyerContact[];
+  source: BuyerSource;
+  consentVerified: boolean;
+  governanceStatus: 'APPROVED' | 'REQUIRES_APPROVAL' | 'RESTRICTED';
+  approvedIndustries: string[];
+  blockedIndustries: string[];
+  notes?: string;
+  registeredAt: string;
+}
+
+export interface ArchetypeTechnicalProfile {
+  requiredCapabilities: string[];
+  stackCompatibility: string[];
+  minimumLocComplexity: number;
+}
+
+export interface ArchetypeEconomicProfile {
+  dealSizeBandUsd: {
+    min: number;
+    max: number;
+  };
+  preferredRoyaltyModels: string[];
+  typicalAnnualSavingsUsd: number;
+}
+
+export interface ArchetypeComplianceConstraints {
+  allowedIndustries: string[];
+  blockedIndustries: string[];
+  minimumGovernanceTier: 'STANDARD' | 'RESTRICTED_EXPORT' | 'HIGH_ASSURANCE';
+  requiresHumanApprovalThresholdUsd: number;
+}
+
 export interface BuyerArchetype {
   id: string;
-  label: string; // e.g. "Cloud Infrastructure Provider"
+  label: string; // e.g. "Cost‑Compression Cloud Buyer"
   archetypeName: string; // Descriptive archetype profile
   companyName: string; // Kept for backwards compatibility, equal to label
   sector: string;
   fitScore: number; // 0-100 heuristic
+  technicalFitProfile: ArchetypeTechnicalProfile;
+  economicProfile: ArchetypeEconomicProfile;
+  complianceConstraints: ArchetypeComplianceConstraints;
   annualSavingsEstimateUsd: number;
   recommendedTier: string;
   contactPersona: string; // e.g. "VP Platform Engineering"
@@ -212,8 +278,71 @@ export interface BuyerArchetype {
   };
 }
 
-// Alias BuyerMatch to BuyerArchetype
+export interface ComplianceFlag {
+  flag: string;
+  severity: 'INFO' | 'WARNING' | 'BLOCKER';
+  description: string;
+  remediationNote?: string;
+}
+
+export interface RealBuyerMatch {
+  id: string;
+  buyerRecord: BuyerRecord;
+  archetypeId: string;
+  archetypeLabel: string;
+  fitScore: number; // 0 - 100
+  stackOverlapScore: number; // 0 - 100
+  capabilityFitScore: number; // 0 - 100
+  budgetFitScore: number; // 0 - 100
+  recommendedTier: string;
+  suggestedOfferPriceUsd: number;
+  matchedCapabilities: string[];
+  matchedTechStack: string[];
+  complianceFlags: ComplianceFlag[];
+  requiresHumanApproval: boolean;
+  approvalStatus: 'PENDING_REVIEW' | 'HUMAN_APPROVED' | 'REJECTED';
+  approvedBy?: string;
+  approvedAt?: string;
+  auditTraceId: string;
+  notes?: string;
+}
+
+// Backwards-compatible alias
 export type BuyerMatch = BuyerArchetype;
+
+export interface MatchedBuyerSet {
+  archetypeMatches: {
+    archetype: BuyerArchetype;
+    matchedRealBuyers: RealBuyerMatch[];
+    totalMatchedCount: number;
+  }[];
+  totalRealBuyersEvaluated: number;
+  totalApprovedMatches: number;
+  totalPendingApprovalMatches: number;
+  governancePolicyApplied: GovernancePolicy;
+  evaluatedAt: string;
+}
+
+export interface GovernancePolicy {
+  id: string;
+  name: string;
+  blockedIndustries: string[];
+  minimumDealSizeUsd: number;
+  humanApprovalThresholdUsd: number;
+  sensitiveSegmentsRequiringReview: string[];
+  enforceConsentVerification: boolean;
+  prohibitedLicenseCombinations: string[];
+}
+
+export interface AuditLogEntry {
+  id: string;
+  timestamp: string;
+  action: 'ARCHETYPE_GENERATED' | 'REAL_BUYER_MATCHED' | 'MATCH_APPROVED' | 'MATCH_REJECTED' | 'BUYER_REGISTERED' | 'CSV_IMPORTED';
+  actor: string;
+  details: string;
+  traceId: string;
+  metadata?: Record<string, any>;
+}
 
 export interface LicensingProfile {
   asset: AssetObject;
@@ -223,6 +352,9 @@ export interface LicensingProfile {
   contracts: Record<string, ContractSpec>;
   buyerArchetypes: BuyerArchetype[];
   buyerMatches: BuyerArchetype[]; // Alias for backwards compatibility
+  realBuyerMatches?: RealBuyerMatch[];
+  matchedBuyerSet?: MatchedBuyerSet;
+  auditTrail?: AuditLogEntry[];
   buyerModelNature: 'hypothetical_archetype_generator';
   realLeadDiscovery: false;
   legalModelNature: 'heuristic_risk_indicators_only';

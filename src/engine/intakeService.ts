@@ -11,6 +11,7 @@ import { ValuationEngine } from './valuationEngine';
 import { LicensingModeler } from './licensingModeler';
 import { ContractGenerator } from './contractGenerator';
 import { BuyerMatcher } from './buyerMatcher';
+import { ArchetypeBuyerMatcher } from './archetypeBuyerMatcher';
 import { LegalHeuristicsEngine } from './legalHeuristics';
 import { SAMPLE_ASSETS } from './sampleAssets';
 
@@ -140,7 +141,10 @@ export class AssetIntakeService {
     const { valuation, useCases } = ValuationEngine.calculateValuation(asset);
     const licensingTiers = LicensingModeler.buildTiers(valuation, useCases);
     const contracts = ContractGenerator.generateContracts(asset, licensingTiers);
-    const buyerArchetypes = BuyerMatcher.discoverBuyers(asset, valuation);
+    const buyerArchetypes = BuyerMatcher.discoverBuyers(asset, valuation, licensingTiers);
+    const matchedBuyerSet = BuyerMatcher.matchArchetypesToRealBuyers(buyerArchetypes);
+    const realBuyerMatches = matchedBuyerSet.archetypeMatches.flatMap(m => m.matchedRealBuyers);
+    const auditTrail = ArchetypeBuyerMatcher.generateAuditTrail(matchedBuyerSet, asset.name);
     const tcsTraceId = `tcs_eng_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`;
 
     return {
@@ -151,6 +155,9 @@ export class AssetIntakeService {
       contracts,
       buyerArchetypes,
       buyerMatches: buyerArchetypes,
+      realBuyerMatches,
+      matchedBuyerSet,
+      auditTrail,
       buyerModelNature: 'hypothetical_archetype_generator',
       realLeadDiscovery: false,
       legalModelNature: 'heuristic_risk_indicators_only',

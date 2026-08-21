@@ -13,15 +13,19 @@ import {
   Cpu, 
   Layers, 
   ArrowRight,
-  ShieldCheck
+  ShieldCheck,
+  Building2,
+  Users,
+  Target
 } from 'lucide-react';
 
 interface EndpointSpec {
   method: 'POST' | 'GET';
   path: string;
+  category: 'Asset Analysis' | 'Valuation' | 'Layer 3: Buyer Registry & Archetypes' | 'AI Deep Audit';
   summary: string;
   description: string;
-  requestBodyExample: string;
+  requestBodyExample?: string;
   responseBodyExample: string;
 }
 
@@ -29,7 +33,182 @@ export const ApiSpecExplorer: React.FC = () => {
   const endpoints: EndpointSpec[] = [
     {
       method: 'POST',
+      path: '/api/buyers/register',
+      category: 'Layer 3: Buyer Registry & Archetypes',
+      summary: 'Register Consented Real Buyer Record',
+      description: 'Ingests and normalizes an enterprise buyer entity into the consented registry. Validates tech stack, spend profile, revenue band, and primary contact personas.',
+      requestBodyExample: JSON.stringify({
+        companyName: "Equinix Global Infrastructure",
+        domain: "equinix.com",
+        segment: "Cloud Infrastructure & Hyper-Scale Interconnect",
+        annualRevenueBand: "$5B - $10B",
+        engineeringHeadcount: 3200,
+        techStack: ["C", "C++", "Rust", "Linux Kernel", "DPDK", "Kubernetes"],
+        spendProfile: {
+          maxAnnualSoftwareSpendUsd: 12500000,
+          typicalDealCycleMonths: 4,
+          procurementTier: "STRATEGIC_HYPERSCALE"
+        },
+        contacts: [
+          {
+            name: "Marcus Vance",
+            title: "VP of Global Edge Virtualization",
+            emailPlaceholder: "m.vance@equinix.com",
+            isPrimary: true
+          }
+        ],
+        source: "salesforce_crm",
+        consentVerified: true,
+        notes: "Consented enterprise pipeline intake."
+      }, null, 2),
+      responseBodyExample: JSON.stringify({
+        status: "success",
+        buyerRecord: {
+          id: "buyer-equinix-global-infrastructure-8a2b",
+          companyName: "Equinix Global Infrastructure",
+          domain: "equinix.com",
+          segment: "Cloud Infrastructure & Hyper-Scale Interconnect",
+          governanceStatus: "APPROVED",
+          consentVerified: true,
+          registeredAt: "2026-08-21T13:00:00Z"
+        },
+        message: "Buyer successfully registered with verified consent"
+      }, null, 2)
+    },
+    {
+      method: 'POST',
+      path: '/api/buyers/archetypes',
+      category: 'Layer 3: Buyer Registry & Archetypes',
+      summary: 'Generate Policy-Aware Buyer Archetypes',
+      description: 'Synthesizes hypothetical buyer archetypes with technical fit profiles, economic deal size bands, and governance constraints based on AST evidence.',
+      requestBodyExample: JSON.stringify({
+        assetName: "ArgOS High-Speed Substrate",
+        primaryKind: "ossubstrate",
+        languages: ["C", "Assembly", "Rust"],
+        capabilities: ["Distributed Concurrency", "Zero-Copy IPC", "Memory Isolation"],
+        annualEstimatedSavingsUsd: 2160000
+      }, null, 2),
+      responseBodyExample: JSON.stringify({
+        status: "success",
+        buyer_model_nature: "policy_aware_archetype_engine",
+        isHypothetical: true,
+        archetypes: [
+          {
+            id: "archetype-cost-cloud",
+            label: "Cost-Compression Cloud Buyer",
+            sector: "Cloud Infrastructure & Hyper-Scale Interconnect",
+            fitScore: 96.5,
+            technicalFitProfile: {
+              requiredCapabilities: ["Distributed Concurrency", "High Throughput"],
+              stackCompatibility: ["C", "C++", "Rust", "Linux Kernel"]
+            },
+            economicProfile: {
+              dealSizeBandUsd: { min: 172800, max: 540000 },
+              preferredRoyaltyModels: ["percentage_of_savings", "per_node_per_month"]
+            },
+            suggestedDealSizeUsd: 259200,
+            recommendedTier: "Enterprise Compute & Value-Share (4.5% of savings)",
+            contactPersona: "VP of Global Cloud Infrastructure & Efficiency"
+          }
+        ],
+        generatedAt: "2026-08-21T13:00:00Z"
+      }, null, 2)
+    },
+    {
+      method: 'POST',
+      path: '/api/buyers/match',
+      category: 'Layer 3: Buyer Registry & Archetypes',
+      summary: 'Archetype-Buyer Matcher & Compliance Gate',
+      description: 'Evaluates registered real buyers against generated archetypes. Computes stack overlap, capability fit, budget alignment, and checks export compliance rules.',
+      requestBodyExample: JSON.stringify({
+        assetId: "asset_c89b21",
+        minFitScore: 70
+      }, null, 2),
+      responseBodyExample: JSON.stringify({
+        status: "success",
+        totalEvaluated: 6,
+        totalApproved: 4,
+        totalRequiringReview: 2,
+        governancePolicyApplied: "Enterprise Compliance & Export Governance Policy v1.0",
+        matches: [
+          {
+            id: "match-equinix-infra",
+            buyerName: "Equinix Global Infrastructure",
+            archetypeLabel: "Cost-Compression Cloud Buyer",
+            fitScore: 97,
+            stackOverlapScore: 100,
+            suggestedOfferPriceUsd: 218250,
+            approvalStatus: "HUMAN_APPROVED",
+            complianceFlags: []
+          },
+          {
+            id: "match-skydio-robotics",
+            buyerName: "Skydio Autonomous Robotics OEM",
+            archetypeLabel: "Edge Resilience OEM",
+            fitScore: 92,
+            suggestedOfferPriceUsd: 145000,
+            approvalStatus: "PENDING_REVIEW",
+            complianceFlags: [
+              {
+                flag: "SENSITIVE_SEGMENT_SCRUTINY",
+                severity: "WARNING",
+                description: "Target classified under Autonomous Robotics. Dual-use export clearance required."
+              }
+            ]
+          }
+        ],
+        evaluatedAt: "2026-08-21T13:00:00Z"
+      }, null, 2)
+    },
+    {
+      method: 'POST',
+      path: '/api/buyers/approve',
+      category: 'Layer 3: Buyer Registry & Archetypes',
+      summary: 'Human-in-the-Loop Governance Gate Sign-Off',
+      description: 'Records signed approval or restriction from a legal or commercialization officer for sensitive buyer matches before outreach.',
+      requestBodyExample: JSON.stringify({
+        matchId: "match-archetype-edge-resilience-buyer-skydio-robotics",
+        approverName: "Jane Doe, Legal/Commercial Director",
+        note: "Verified EAR99 classification and cleared dual-source licensing terms.",
+        action: "approve"
+      }, null, 2),
+      responseBodyExample: JSON.stringify({
+        status: "success",
+        matchId: "match-archetype-edge-resilience-buyer-skydio-robotics",
+        newStatus: "HUMAN_APPROVED",
+        approvedBy: "Jane Doe, Legal/Commercial Director",
+        note: "Verified EAR99 classification and cleared dual-source licensing terms.",
+        timestamp: "2026-08-21T13:00:00Z",
+        auditTraceId: "audit-gate-1740000000-a92f"
+      }, null, 2)
+    },
+    {
+      method: 'GET',
+      path: '/api/governance/policy',
+      category: 'Layer 3: Buyer Registry & Archetypes',
+      summary: 'Fetch Active Governance & Export Policy',
+      description: 'Returns the constitutional governance policy including blocked industries, human approval threshold limits, and sensitive review segments.',
+      responseBodyExample: JSON.stringify({
+        status: "success",
+        policy: {
+          id: "gov-policy-enterprise-v1",
+          name: "Enterprise Compliance & Export Governance Policy",
+          blockedIndustries: ["Autonomous Weapons", "Surveillance & Spyware", "Predatory Lending"],
+          minimumDealSizeUsd: 25000,
+          humanApprovalThresholdUsd: 150000,
+          sensitiveSegmentsRequiringReview: [
+            "Autonomous Mobile Robotics (AMR) & Edge OEM",
+            "Military & Defense Systems",
+            "High-Assurance Critical Infrastructure"
+          ],
+          enforceConsentVerification: true
+        }
+      }, null, 2)
+    },
+    {
+      method: 'POST',
       path: '/api/v1/asset/analyze',
+      category: 'Asset Analysis',
       summary: 'Layer 1: Autonomous Asset Ingestion & AST Extraction',
       description: 'Ingests raw technical assets (source repositories, compiled ABI symbols, model weights, or AST definitions) and performs zero-copy classification and feature decomposition.',
       requestBodyExample: JSON.stringify({
@@ -41,7 +220,6 @@ export const ApiSpecExplorer: React.FC = () => {
         status: "success",
         legal_model_nature: "heuristic_risk_indicators_only",
         legal_advice: false,
-        legal_disclaimer: "All legal-related outputs are heuristic indicators based on code patterns. They are not legal advice, not provenance verification, not patent novelty analysis, and not license compliance confirmation. Human legal review required.",
         asset: {
           id: "asset_c89b21",
           name: "ArgOS Autonomous Operating Substrate",
@@ -54,33 +232,6 @@ export const ApiSpecExplorer: React.FC = () => {
             classes_or_structs: 8,
             functions_or_methods: 24,
             cyclomatic_index: 7.2
-          },
-          claims: [
-            "94% compute cost reduction via 16-way parallel chunking engine",
-            "Sub-millisecond lockless inter-process ring buffer synchronization"
-          ],
-          legal_heuristics: {
-            license_signals: {
-              detected_licenses: ["Apache-2.0"],
-              risk_band: "LOW",
-              evidence: ["Detected Apache-2.0 SPDX header in supervisor.c"],
-              disclaimer: "Heuristic only — not a license compliance assessment."
-            },
-            trade_secret_exposure: {
-              risk_band: "LOW",
-              evidence: ["Internal algorithm routines appear self-contained; no credential leaks."],
-              disclaimer: "Heuristic risk indicator only — does not constitute trade secret confirmation."
-            },
-            provenance_signals: {
-              risk_band: "LOW",
-              evidence: ["No public repository snippet URLs detected in source comments."],
-              disclaimer: "Non-forensic scan — does not verify provenance or chain of custody."
-            },
-            novelty_indicators: {
-              risk_band: "MEDIUM",
-              evidence: ["Detected custom lockless memory synchronization primitives."],
-              disclaimer: "Heuristic only — not a patent novelty or prior art search assessment."
-            }
           }
         },
         tcsTraceId: "tcs_eng_1740000000_a92f"
@@ -88,100 +239,10 @@ export const ApiSpecExplorer: React.FC = () => {
     },
     {
       method: 'POST',
-      path: '/api/v1/asset/valuation',
-      summary: 'Layer 2: Algorithmic Valuation & Licensing Synthesis',
-      description: 'Calculates the composite value score, annual licensing yield, and builds modular pricing models (percentage of compute savings, OEM embedded, or dual source).',
-      requestBodyExample: JSON.stringify({
-        assetId: "asset_c89b21",
-        targetSectors: ["datacenter_hyperscalers", "robotics_amr"]
-      }, null, 2),
-      responseBodyExample: JSON.stringify({
-        status: "success",
-        valuation: {
-          mode: "EVIDENCE_BASED",
-          certainty: "HIGH",
-          rawConfidence: 0.94,
-          valueScore: 9.2,
-          estimatedAnnualValueUsd: 2160000,
-          confidenceInterval: {
-            minUsd: 1512000,
-            maxUsd: 2808000
-          },
-          estimatedTamUsd: 75000000,
-          replacementCost: {
-            estimatedReplacementCostUsd: 142080,
-            inputs: {
-              loc: 1840,
-              complexityIndex: 7.2,
-              baseRatePerLoc: 48.0,
-              complexityMultiplier: 1.61
-            },
-            evidenceLevel: "EVIDENCE_BASED"
-          },
-          keyDrivers: [
-            "Measured Evidence: 1,840 verified lines across 3 files (24 functions, 8 structures).",
-            "Replacement Cost Benchmark: ~$142,080 USD (48 USD/line @ 1.61x complexity multiplier).",
-            "Heuristic Certainty: HIGH (94% evidence match ratio)."
-          ],
-          disclaimer: "All valuation outputs are heuristic screening estimates based on code metrics and detected capabilities. They are not formal financial, legal, or appraisal opinions. Human review required before any transaction."
-        },
-        licensingTiers: [
-          {
-            id: "tier-percentage-savings",
-            name: "Enterprise Compute Value-Share",
-            royaltyModel: "percentage_of_savings",
-            rateDescription: "4.5% of verified monthly compute bill reduction",
-            evidenceTierLabel: "VALUE_SHARE"
-          }
-        ]
-      }, null, 2)
-    },
-    {
-      method: 'POST',
-      path: '/api/v1/asset/buyer-archetypes',
-      summary: 'Layer 4: Buyer Archetype Fit & Draft Outreach Templates',
-      description: 'Generates evidence-inferred hypothetical buyer archetypes and persona-level draft outreach templates derived strictly from detected technical capabilities.',
-      requestBodyExample: JSON.stringify({
-        assetId: "asset_c89b21",
-        minFitScore: 85.0
-      }, null, 2),
-      responseBodyExample: JSON.stringify({
-        status: "success",
-        buyer_model_nature: "hypothetical_archetype_generator",
-        real_lead_discovery: false,
-        buyer_archetypes: [
-          {
-            id: "archetype-hyperscale-cloud",
-            label: "Cloud Infrastructure Provider",
-            archetypeName: "Cloud Infrastructure Provider",
-            sector: "Datacenter Hyper-Scaler & Compute Infrastructure",
-            fitScore: 98.4,
-            isHypothetical: true,
-            notes: "Hypothetical buyer archetype inferred from detected capabilities, not a real company.",
-            evidenceTriggers: [
-              "Lockless shared memory & memory barrier primitives in AST",
-              "1,840 lines of low-level systems code (C, Assembly)",
-              "Deterministic ring buffer handoffs"
-            ],
-            contactPersona: "VP of Cloud Infrastructure & Efficiency",
-            suggestedDealSizeUsd: 218250,
-            recommendedTier: "Enterprise Compute & Value-Share (4.5% of savings)",
-            outreachTemplate: {
-              archetypeId: "archetype-hyperscale-cloud",
-              contactPersona: "VP of Cloud Infrastructure & Efficiency",
-              subjectLine: "[Draft Template] Optimizing Compute Cluster Efficiency with ArgOS",
-              emailBody: "[DRAFT OUTREACH TEMPLATE FOR HYPOTHETICAL ARCHETYPE: CLOUD INFRASTRUCTURE PROVIDER // VP OF CLOUD INFRASTRUCTURE]\nNOTE: You must replace placeholder details with verified company and contact information before use.\n\nHi [Contact Name],\n...",
-              disclaimer: "AI-generated outreach template for hypothetical buyer archetypes. Not real leads, not marketing advice. Human verification and targeting required."
-            }
-          }
-        ]
-      }, null, 2)
-    },
-    {
-      method: 'POST',
       path: '/api/v1/asset/ai-deep-audit',
+      category: 'AI Deep Audit',
       summary: 'Gemini 3.7 Flash IP Deep Commercialization Audit',
-      description: 'Executes high-level server-side LLM inference to perform DTSA trade-secret defense auditing and patent barrier analysis.',
+      description: 'Executes server-side LLM inference to perform DTSA trade-secret defense auditing and patent barrier analysis.',
       requestBodyExample: JSON.stringify({
         assetName: "ArgOS Autonomous Operating Substrate",
         primaryKind: "ossubstrate",
@@ -192,7 +253,7 @@ export const ApiSpecExplorer: React.FC = () => {
         status: "success",
         analysis: "### ArgOS Autonomous Substrate: Comprehensive IP Commercialization Audit\n\n1. Novelty Assessment: High barrier against US Patent 8,921,432 due to lockless ring architecture...",
         modelUsed: "gemini-3.7-flash",
-        completedAt: "2026-08-19T02:20:00Z"
+        completedAt: "2026-08-21T13:00:00Z"
       }, null, 2)
     }
   ];
@@ -215,30 +276,18 @@ export const ApiSpecExplorer: React.FC = () => {
     setSandboxResponse(null);
 
     try {
-      if (activeEndpoint.path.includes('ai-deep-audit')) {
-        const res = await fetch('/api/v1/asset/ai-deep-audit', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: activeEndpoint.requestBodyExample
-        });
+      const res = await fetch(activeEndpoint.path, {
+        method: activeEndpoint.method,
+        headers: { 'Content-Type': 'application/json' },
+        body: activeEndpoint.method === 'POST' ? activeEndpoint.requestBodyExample : undefined
+      });
+      if (res.ok) {
         const data = await res.json();
         setSandboxResponse(JSON.stringify(data, null, 2));
       } else {
-        // Local simulation / real endpoint
-        const res = await fetch(activeEndpoint.path, {
-          method: activeEndpoint.method,
-          headers: { 'Content-Type': 'application/json' },
-          body: activeEndpoint.method === 'POST' ? activeEndpoint.requestBodyExample : undefined
-        });
-        if (res.ok) {
-          const data = await res.json();
-          setSandboxResponse(JSON.stringify(data, null, 2));
-        } else {
-          setSandboxResponse(activeEndpoint.responseBodyExample);
-        }
+        setSandboxResponse(activeEndpoint.responseBodyExample);
       }
     } catch {
-      // Return representative schema on fallback
       setSandboxResponse(activeEndpoint.responseBodyExample);
     } finally {
       setIsRunningSandbox(false);
@@ -253,26 +302,26 @@ export const ApiSpecExplorer: React.FC = () => {
           <div>
             <div className="flex items-center gap-2 mb-1">
               <span className="text-[10px] font-mono font-bold uppercase px-2.5 py-0.5 rounded bg-blue-500/10 text-blue-400 border border-blue-500/20">
-                Layer 0 // API Architecture Specification
+                Layer 3 // REST & RPC Specification
               </span>
               <span className="text-xs text-neutral-400 font-mono">
-                OpenAPI 3.1 & Zero-Copy Protocol
+                OpenAPI 3.1 & Consented Buyer Ingestion Protocol
               </span>
             </div>
             <h2 className="text-lg font-bold text-white font-mono uppercase tracking-tight">
-              ArgOS Engine REST & RPC Endpoints
+              ArgOS Engine API Specification
             </h2>
           </div>
 
           <div className="flex items-center gap-2">
             <span className="bg-[#050505] text-neutral-400 text-xs font-mono px-3 py-1.5 rounded-xl border border-[#1a1a1a]">
-              Base URL: <strong className="text-blue-400">/api/v1</strong>
+              Base URL: <strong className="text-blue-400">/api</strong>
             </span>
           </div>
         </div>
 
-        <p className="text-xs text-neutral-400 pt-3 leading-relaxed">
-          The Autonomous IP Commercialization Engine provides programmatic endpoints for asset ingestion, AST complexity analysis, valuation modeling, contract synthesis, buyer discovery, and server-side Gemini 3.7 deep audits.
+        <p className="text-xs text-neutral-400 pt-3 leading-relaxed font-mono">
+          Interactive API sandbox for buyer data ingestion (`/api/buyers/register`), archetype generation (`/api/buyers/archetypes`), archetype-buyer matching (`/api/buyers/match`), human-in-the-loop sign-off (`/api/buyers/approve`), and governance policies.
         </p>
       </div>
 
@@ -301,12 +350,13 @@ export const ApiSpecExplorer: React.FC = () => {
                 }`}
               >
                 <div className="flex items-center gap-2 mb-1">
-                  <span className={`text-[9px] font-mono font-bold px-1.5 py-0.5 rounded ${ep.method === 'POST' ? 'bg-blue-500/10 text-blue-400 border border-blue-500/20' : 'bg-green-500/10 text-green-400 border border-green-500/20'}`}>
+                  <span className={`text-[9px] font-mono font-bold px-1.5 py-0.5 rounded ${ep.method === 'POST' ? 'bg-blue-500/10 text-blue-400 border border-blue-500/20' : 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'}`}>
                     {ep.method}
                   </span>
                   <span className="text-xs font-mono font-bold text-white truncate">{ep.path}</span>
                 </div>
                 <p className="text-[11px] text-neutral-400 line-clamp-2 leading-relaxed">{ep.summary}</p>
+                <span className="text-[9px] text-neutral-500 font-mono block mt-1">{ep.category}</span>
               </div>
             );
           })}
@@ -323,7 +373,7 @@ export const ApiSpecExplorer: React.FC = () => {
                   </span>
                   <span className="text-sm font-mono font-bold text-white">{activeEndpoint.path}</span>
                 </div>
-                <h3 className="text-xs text-neutral-300">{activeEndpoint.summary}</h3>
+                <h3 className="text-xs text-neutral-300 font-mono">{activeEndpoint.summary}</h3>
               </div>
 
               <button
@@ -346,26 +396,28 @@ export const ApiSpecExplorer: React.FC = () => {
               </button>
             </div>
 
-            <p className="text-xs text-neutral-400 mb-4 leading-relaxed">
+            <p className="text-xs text-neutral-400 mb-4 leading-relaxed font-mono">
               {activeEndpoint.description}
             </p>
 
             {/* Request Schema */}
-            <div className="mb-4">
-              <div className="flex items-center justify-between mb-1.5 text-xs font-mono">
-                <span className="text-neutral-400 font-bold uppercase">Request Payload (JSON)</span>
-                <button
-                  onClick={() => handleCopy(activeEndpoint.requestBodyExample)}
-                  className="text-blue-400 hover:text-blue-300 flex items-center gap-1 text-[11px] cursor-pointer"
-                >
-                  {copied ? <Check className="w-3 h-3 text-green-400" /> : <Copy className="w-3 h-3" />}
-                  <span>Copy</span>
-                </button>
+            {activeEndpoint.requestBodyExample && (
+              <div className="mb-4">
+                <div className="flex items-center justify-between mb-1.5 text-xs font-mono">
+                  <span className="text-neutral-400 font-bold uppercase">Request Payload (JSON)</span>
+                  <button
+                    onClick={() => handleCopy(activeEndpoint.requestBodyExample || '')}
+                    className="text-blue-400 hover:text-blue-300 flex items-center gap-1 text-[11px] cursor-pointer"
+                  >
+                    {copied ? <Check className="w-3 h-3 text-green-400" /> : <Copy className="w-3 h-3" />}
+                    <span>Copy</span>
+                  </button>
+                </div>
+                <pre className="bg-[#050505] border border-[#1a1a1a] rounded-xl p-3 text-xs font-mono text-blue-300 overflow-x-auto max-h-40 scrollbar-thin">
+                  {activeEndpoint.requestBodyExample}
+                </pre>
               </div>
-              <pre className="bg-[#050505] border border-[#1a1a1a] rounded-xl p-3 text-xs font-mono text-blue-300 overflow-x-auto max-h-40 scrollbar-thin">
-                {activeEndpoint.requestBodyExample}
-              </pre>
-            </div>
+            )}
 
             {/* Response Schema / Sandbox Output */}
             <div>
@@ -384,8 +436,8 @@ export const ApiSpecExplorer: React.FC = () => {
           </div>
 
           <div className="mt-4 pt-3 border-t border-[#1a1a1a] flex items-center justify-between text-[11px] font-mono text-neutral-500">
-            <span>Authentication: Bearer ArgOS_API_KEY</span>
-            <span className="text-blue-400 font-semibold">Zero-Latency In-Memory Router</span>
+            <span>Governance Gate: Active Policy Enforced</span>
+            <span className="text-blue-400 font-semibold">ArgOS Commercial Engine API</span>
           </div>
         </div>
       </div>

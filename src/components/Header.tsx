@@ -40,7 +40,7 @@ export const Header: React.FC<HeaderProps> = ({
     { id: 'intake' as TabType, label: 'Asset Code & AST', icon: UploadCloud },
     { id: 'valuation' as TabType, label: 'Valuation & Tiers', icon: DollarSign },
     { id: 'contracts' as TabType, label: 'Contracts (MLA)', icon: FileText },
-    { id: 'buyers' as TabType, label: 'Buyer Archetypes', icon: Users },
+    { id: 'buyers' as TabType, label: 'Real Buyer Console', icon: Users },
     { id: 'apispec' as TabType, label: 'API Sandbox', icon: Code2 }
   ];
 
