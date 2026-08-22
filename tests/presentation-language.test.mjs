@@ -6,7 +6,6 @@ const customerFacingFiles = [
   'src/components/ValuationAndLicensingView.tsx',
   'src/components/BentoGridDashboard.tsx',
   'src/components/Header.tsx',
-  'src/components/ApiSpecExplorer.tsx',
   'src/components/BuyerDiscoveryAndOutreachView.tsx',
   'README.md',
 ];
