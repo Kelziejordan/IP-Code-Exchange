@@ -150,7 +150,7 @@ export const BentoGridDashboard: React.FC<BentoGridDashboardProps> = ({
               <span>•</span>
               <span>{asset.size_metrics.loc.toLocaleString()} Verified Lines</span>
               <span>•</span>
-              <span className="text-green-400">Cleanroom Lineage</span>
+              <span className="text-green-400">Source Lineage</span>
             </div>
             <button
               id="bento-inspect-ast-btn"
@@ -174,7 +174,7 @@ export const BentoGridDashboard: React.FC<BentoGridDashboardProps> = ({
                   Layer 4 // Counterparty Fit
                 </span>
                 <h3 className="text-xs font-bold text-neutral-400 uppercase tracking-widest font-mono mt-0.5">
-                  Hypothetical Buyer Profiles
+                  Inferred Buyer Archetypes
                 </h3>
               </div>
               <span className="text-[10px] font-mono text-purple-400 bg-purple-500/10 px-2 py-0.5 rounded border border-purple-500/20">
@@ -225,7 +225,7 @@ export const BentoGridDashboard: React.FC<BentoGridDashboardProps> = ({
           <div>
             <div className="flex items-center justify-between mb-2">
               <h3 className="text-xs font-bold text-neutral-400 uppercase tracking-widest font-mono">
-                Screening Valuation Estimate
+                Screening Valuation Assessment
               </h3>
               <span className={`text-[10px] font-mono px-2 py-0.5 rounded border ${getCertaintyBadge(valuation.certainty)}`}>
                 {valuation.certainty}
@@ -278,25 +278,25 @@ export const BentoGridDashboard: React.FC<BentoGridDashboardProps> = ({
           </div>
 
           <div className="mt-4 pt-3 border-t border-[#1a1a1a] flex items-center justify-between">
-            <span className="text-[10px] text-neutral-500 font-mono">Non-Appraisal Estimate</span>
+            <span className="text-[10px] text-neutral-500 font-mono">Screening Assessment</span>
             <button
               id="bento-explore-valuation-btn"
               onClick={() => onNavigateTab('valuation')}
               className="text-xs text-blue-400 hover:text-blue-300 font-mono font-bold flex items-center gap-1 cursor-pointer"
             >
-              <span>Explore Modeler</span>
+              <span>Explore Economic Model</span>
               <ArrowRight className="w-3 h-3" />
             </button>
           </div>
         </div>
 
         {/* ------------------------------------------------------------- */}
-        {/* TILE 4: HYPOTHETICAL DEAL PIPELINE (Span 3 cols)              */}
+        {/* TILE 4: COMMERCIAL OPPORTUNITY (Span 3 cols)                  */}
         {/* ------------------------------------------------------------- */}
         <div className="col-span-1 md:col-span-6 lg:col-span-3 bg-[#0a0a0a] border border-[#1a1a1a] rounded-2xl p-5 flex flex-col justify-between shadow-2xl hover:border-[#2a2a2a] transition">
           <div>
             <h3 className="text-xs font-bold text-neutral-400 uppercase tracking-widest mb-3 font-mono">
-              Modeled Pipeline
+              Commercial Opportunity
             </h3>
 
             <div className="space-y-3 font-mono">
@@ -305,7 +305,7 @@ export const BentoGridDashboard: React.FC<BentoGridDashboardProps> = ({
                 <span className="text-lg font-bold text-white">{buyerMatches.length}</span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-[10px] text-neutral-500">MODELED YIELD</span>
+                <span className="text-[10px] text-neutral-500">SCREENING YIELD</span>
                 <span className="text-lg font-bold text-blue-400">
                   ${Math.round(pipelineValueUsd / 1000)}K
                 </span>
@@ -321,7 +321,7 @@ export const BentoGridDashboard: React.FC<BentoGridDashboardProps> = ({
 
           <div className="mt-4 pt-3 border-t border-[#1a1a1a]">
             <div className="bg-[#050505] p-2 rounded-lg border border-[#1a1a1a] text-[10px] font-mono text-neutral-400 text-center">
-              Hypothetical estimates only
+              Evidence-qualified screening estimates
             </div>
           </div>
         </div>
