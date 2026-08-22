@@ -44,7 +44,7 @@ export const Header: React.FC<HeaderProps> = ({
     { id: 'valuation' as TabType, label: 'Valuation & Tiers', icon: DollarSign },
     { id: 'contracts' as TabType, label: 'Contracts (MLA)', icon: FileText },
     { id: 'buyers' as TabType, label: 'Real Buyer Console', icon: Users },
-    { id: 'apispec' as TabType, label: 'API Sandbox', icon: Code2 }
+    { id: 'apispec' as TabType, label: 'API Console', icon: Code2 }
   ];
 
   return (
