@@ -15,7 +15,7 @@
 
 Transforming complex intellectual property, low-level OS kernels, distributed systems, and AI models into structured, transactable enterprise software licenses is notoriously manual and error-prone.
 
-The **ArgOS IP Commercialization Engine** is an end-to-end autonomous pipeline designed for technical founders, research labs, IP attorneys, and enterprise procurement teams. It ingests raw technical assets, performs deterministic Abstract Syntax Tree (AST) decomposition, calculates non-appraisal screening valuations, generates production-ready Master License Agreements, and matches assets against consented enterprise buyers with human-in-the-loop governance gates.
+The **ArgOS IP Commercialization Engine** is an end-to-end autonomous pipeline designed for technical founders, research labs, IP attorneys, and enterprise procurement teams. It ingests raw technical assets, performs deterministic Abstract Syntax Tree (AST) decomposition, calculates screening valuations for commercial planning, generates Master License Agreement drafts for commercial planning, and matches assets against consented enterprise buyers with human-in-the-loop governance gates.
 
 ```
 ┌────────────────────────┐      ┌────────────────────────┐      ┌────────────────────────┐      ┌────────────────────────┐
@@ -53,8 +53,8 @@ The **ArgOS IP Commercialization Engine** is an end-to-end autonomous pipeline d
 - **Capability & Stack Overlap Matcher**: Scores compatibility (0–100%) against consented enterprise buyers.
 - **Human-in-the-Loop Compliance Gate**: Constitutional export control policy checks (EAR99 / Dual-use / Sanctions screening) requiring officer sign-off before outreach activation.
 
-### ⚡ 5. Interactive API Sandbox (OpenAPI 3.1)
-- Live, in-browser REST client to execute queries against local endpoints:
+### ⚡ 5. Interactive API Console (OpenAPI 3.1)
+- Live, in-browser REST client to execute queries against application endpoints:
   - `POST /api/buyers/register` — Register consented buyer records.
   - `POST /api/buyers/archetypes` — Generate policy-bounded buyer archetypes.
   - `POST /api/buyers/match` — Evaluate buyer candidates with compliance checks.
@@ -76,7 +76,7 @@ The **ArgOS IP Commercialization Engine** is an end-to-end autonomous pipeline d
 │   │   ├── ValuationAndLicensingView.tsx # Pricing models & tier calculator
 │   │   ├── ContractGeneratorView.tsx     # Master License Agreement synthesis
 │   │   ├── BuyerDiscoveryAndOutreachView.tsx # Buyer matching & compliance gate
-│   │   ├── ApiSpecExplorer.tsx     # Interactive REST sandbox
+│   │   ├── ApiSpecExplorer.tsx     # Interactive REST console
 │   │   ├── AiDeepAuditModal.tsx    # Gemini 3.7 Flash commercialization audit
 │   │   └── Header.tsx              # Navigation & status bar
 │   ├── engine/                     # Core algorithmic engines
