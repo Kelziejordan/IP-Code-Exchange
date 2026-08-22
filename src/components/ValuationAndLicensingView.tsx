@@ -86,7 +86,7 @@ export const ValuationAndLicensingView: React.FC<ValuationAndLicensingViewProps>
               </span>
             </div>
             <h2 className="text-lg font-bold text-white font-mono uppercase tracking-tight">
-              Screening Valuation Estimate (Evidence‑Based, Non‑Appraisal)
+              Screening Valuation Assessment (Evidence‑Based)
             </h2>
             <p className="text-xs text-neutral-400 font-mono mt-0.5">
               Derived from code metrics and detected capabilities. Not a formal appraisal.
@@ -265,7 +265,7 @@ export const ValuationAndLicensingView: React.FC<ValuationAndLicensingViewProps>
         </div>
       </div>
 
-      {/* 2. Interactive Live Royalty Yield & Client ROI Simulator (Shown when evidence exists) */}
+      {/* 2. Interactive Economic Impact Model (Shown when evidence exists) */}
       {!isInsufficient && (
         <div className="bg-[#0a0a0a] border border-[#1a1a1a] rounded-2xl p-5 md:p-6 shadow-2xl">
           <div className="flex items-center justify-between pb-4 mb-4 border-b border-[#1a1a1a]">
@@ -278,7 +278,7 @@ export const ValuationAndLicensingView: React.FC<ValuationAndLicensingViewProps>
                   Royalty Yield & Buyer ROI Sensitivity Modeler
                 </h3>
                 <p className="text-xs text-neutral-400">
-                  Simulate counterparty economics and annual cash flow based on customer infrastructure spend.
+                  Model counterparty economics and annual cash flow based on customer infrastructure spend.
                 </p>
               </div>
             </div>
