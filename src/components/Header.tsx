@@ -12,6 +12,7 @@ import {
   Sparkles, 
   Layers, 
   UploadCloud,
+  Scale,
   ArrowRight
 } from 'lucide-react';
 
@@ -21,6 +22,7 @@ interface HeaderProps {
   activeTab: TabType;
   setActiveTab: (tab: TabType) => void;
   onOpenAiAudit: () => void;
+  onOpenLicense?: () => void;
   tcsTraceId?: string;
   hasAnalyzed: boolean;
   activeAssetName?: string;
@@ -31,6 +33,7 @@ export const Header: React.FC<HeaderProps> = ({
   activeTab,
   setActiveTab,
   onOpenAiAudit,
+  onOpenLicense,
   hasAnalyzed,
   activeAssetName,
   onLaunchOutreach
@@ -78,6 +81,16 @@ export const Header: React.FC<HeaderProps> = ({
               </div>
 
               <button
+                id="header-license-btn"
+                onClick={onOpenLicense}
+                title="View Apache 2.0 License"
+                className="hidden md:flex items-center gap-1.5 text-xs font-mono text-neutral-400 hover:text-white px-2.5 py-1.5 rounded-lg border border-[#1a1a1a] hover:border-[#333] transition cursor-pointer"
+              >
+                <Scale className="w-3.5 h-3.5 text-neutral-400" />
+                <span>Apache-2.0</span>
+              </button>
+
+              <button
                 id="header-ai-audit-btn"
                 onClick={onOpenAiAudit}
                 className="flex items-center gap-1.5 bg-blue-600/15 hover:bg-blue-600/25 text-blue-400 border border-blue-500/30 font-semibold px-3 py-1.5 rounded-xl text-xs transition cursor-pointer"
@@ -96,14 +109,25 @@ export const Header: React.FC<HeaderProps> = ({
               </button>
             </>
           ) : (
-            <button
-              id="header-api-spec-btn"
-              onClick={() => setActiveTab('apispec')}
-              className="text-xs font-mono text-neutral-400 hover:text-white flex items-center gap-1 transition px-3 py-1.5 rounded-lg border border-transparent hover:border-[#2a2a2a] cursor-pointer"
-            >
-              <Code2 className="w-3.5 h-3.5 text-blue-400" />
-              <span>API Reference</span>
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                id="header-license-btn-unauth"
+                onClick={onOpenLicense}
+                className="text-xs font-mono text-neutral-400 hover:text-white flex items-center gap-1.5 transition px-2.5 py-1.5 rounded-lg border border-[#1a1a1a] hover:border-[#333] cursor-pointer"
+              >
+                <Scale className="w-3.5 h-3.5 text-neutral-400" />
+                <span>Apache-2.0</span>
+              </button>
+
+              <button
+                id="header-api-spec-btn"
+                onClick={() => setActiveTab('apispec')}
+                className="text-xs font-mono text-neutral-400 hover:text-white flex items-center gap-1 transition px-3 py-1.5 rounded-lg border border-transparent hover:border-[#2a2a2a] cursor-pointer"
+              >
+                <Code2 className="w-3.5 h-3.5 text-blue-400" />
+                <span>API Reference</span>
+              </button>
+            </div>
           )}
         </div>
       </div>

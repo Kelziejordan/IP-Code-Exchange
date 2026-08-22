@@ -16,7 +16,8 @@ import {
   ArrowRight,
   ShieldCheck,
   TrendingUp,
-  Users
+  Users,
+  AlertCircle
 } from 'lucide-react';
 import { SAMPLE_ASSETS, SampleAssetDefinition } from '../engine/sampleAssets';
 import { AssetSourceType } from '../types';
@@ -63,6 +64,7 @@ int process_event_stream(transaction_event_t* events, size_t count) {
   );
   const [uploadedZip, setUploadedZip] = useState<File | null>(null);
   const [dragOver, setDragOver] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const selectedSample = SAMPLE_ASSETS.find(s => s.id === selectedSampleId) || SAMPLE_ASSETS[0];
@@ -70,11 +72,13 @@ int process_event_stream(transaction_event_t* events, size_t count) {
   const handleSampleSelect = (sample: SampleAssetDefinition) => {
     setSelectedSampleId(sample.id);
     setCustomCode(sample.files[0].content);
+    setErrorMessage(null);
   };
 
   const handleFileDrop = (e: React.DragEvent) => {
     e.preventDefault();
     setDragOver(false);
+    setErrorMessage(null);
     if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
       const file = e.dataTransfer.files[0];
       setUploadedZip(file);
@@ -83,30 +87,45 @@ int process_event_stream(transaction_event_t* events, size_t count) {
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setErrorMessage(null);
     if (e.target.files && e.target.files.length > 0) {
       setUploadedZip(e.target.files[0]);
     }
   };
 
   const handleStartAnalysis = async () => {
-    if (selectedMode === 'upload' && uploadedZip) {
-      await onRunAnalysis({
-        zipFile: uploadedZip,
-        sourceType: 'zip_archive',
-        assetName: uploadedZip.name.replace(/\.[^/.]+$/, '')
-      });
-    } else if (selectedMode === 'code') {
-      await onRunAnalysis({
-        customCode,
-        sourceType: 'raw_code',
-        assetName: 'Custom Source Code Asset'
-      });
-    } else if (selectedMode === 'sample') {
-      await onRunAnalysis({
-        inputSource: selectedSampleId,
-        sourceType: selectedSample.sourceType,
-        assetName: selectedSample.name
-      });
+    setErrorMessage(null);
+    try {
+      if (selectedMode === 'upload') {
+        if (!uploadedZip) {
+          setErrorMessage('Please select or drop a .zip archive or code file first.');
+          return;
+        }
+        await onRunAnalysis({
+          zipFile: uploadedZip,
+          sourceType: 'zip_archive',
+          assetName: uploadedZip.name.replace(/\.[^/.]+$/, '')
+        });
+      } else if (selectedMode === 'code') {
+        if (!customCode || customCode.trim().length === 0) {
+          setErrorMessage('Please enter or paste some source code before analyzing.');
+          return;
+        }
+        await onRunAnalysis({
+          customCode,
+          sourceType: 'raw_code',
+          assetName: 'Custom Source Code Asset'
+        });
+      } else if (selectedMode === 'sample') {
+        await onRunAnalysis({
+          inputSource: selectedSampleId,
+          sourceType: selectedSample.sourceType,
+          assetName: selectedSample.name
+        });
+      }
+    } catch (err: any) {
+      console.error('Intake analysis trigger failed:', err);
+      setErrorMessage(err?.message || 'Analysis encountered an error. Please try again.');
     }
   };
 
@@ -264,6 +283,14 @@ int process_event_stream(transaction_event_t* events, size_t count) {
                 </div>
               );
             })}
+          </div>
+        )}
+
+        {/* Error Alert Banner */}
+        {errorMessage && (
+          <div className="bg-red-950/40 border border-red-500/50 rounded-xl p-3.5 flex items-center gap-2.5 text-xs text-red-200">
+            <AlertCircle className="w-4 h-4 text-red-400 flex-shrink-0" />
+            <span>{errorMessage}</span>
           </div>
         )}
 

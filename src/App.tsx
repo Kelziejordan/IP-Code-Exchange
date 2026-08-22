@@ -13,9 +13,10 @@ import { ContractGeneratorView } from './components/ContractGeneratorView';
 import { BuyerDiscoveryAndOutreachView } from './components/BuyerDiscoveryAndOutreachView';
 import { ApiSpecExplorer } from './components/ApiSpecExplorer';
 import { AiDeepAuditModal } from './components/AiDeepAuditModal';
+import { LicenseModal } from './components/LicenseModal';
 import { AssetIntakeService } from './engine/intakeService';
 import { LicensingProfile, AssetSourceType } from './types';
-import { UploadCloud, Cpu, Layers, ArrowRight, ShieldCheck } from 'lucide-react';
+import { UploadCloud, Cpu, Layers, ArrowRight, ShieldCheck, Scale } from 'lucide-react';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<TabType>('intake');
@@ -23,6 +24,7 @@ export default function App() {
   const [isAnalyzing, setIsAnalyzing] = useState<boolean>(false);
   const [activeStatus, setActiveStatus] = useState<string>('idle');
   const [isAiAuditOpen, setIsAiAuditOpen] = useState<boolean>(false);
+  const [isLicenseOpen, setIsLicenseOpen] = useState<boolean>(false);
 
   const handleRunAnalysis = async (params: {
     inputSource?: string;
@@ -52,6 +54,7 @@ export default function App() {
       setActiveTab('bento');
     } catch (err: any) {
       console.error('Analysis failed:', err);
+      throw err;
     } finally {
       setIsAnalyzing(false);
       setActiveStatus('idle');
@@ -70,6 +73,7 @@ export default function App() {
         activeTab={activeTab}
         setActiveTab={setActiveTab}
         onOpenAiAudit={() => setIsAiAuditOpen(true)}
+        onOpenLicense={() => setIsLicenseOpen(true)}
         tcsTraceId={profile?.tcsTraceId}
         hasAnalyzed={!!profile}
         activeAssetName={profile?.asset.name}
@@ -224,16 +228,32 @@ export default function App() {
 
       {/* Footer */}
       <footer className="border-t border-[#141414] bg-[#0a0a0a] py-4 text-xs text-neutral-500">
-        <div className="max-w-7xl mx-auto px-4 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
-            <span className="text-neutral-400">ArgOS Commercialization Engine</span>
+        <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
+              <span className="text-neutral-400 font-semibold">ArgOS Commercialization Engine</span>
+            </div>
+            <span className="text-neutral-600">|</span>
+            <button
+              onClick={() => setIsLicenseOpen(true)}
+              className="text-neutral-400 hover:text-blue-400 flex items-center gap-1 font-mono transition cursor-pointer"
+            >
+              <Scale className="w-3.5 h-3.5" />
+              <span>Apache 2.0 License</span>
+            </button>
           </div>
           <div className="text-[11px] text-neutral-600 font-mono">
             Cleanroom AST Analysis & Enterprise Licensing
           </div>
         </div>
       </footer>
+
+      {/* License Modal */}
+      <LicenseModal
+        isOpen={isLicenseOpen}
+        onClose={() => setIsLicenseOpen(false)}
+      />
 
       {/* AI Deep IP Audit Modal */}
       {profile && (

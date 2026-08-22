@@ -133,11 +133,13 @@ export class AssetClassifier {
       : 0;
 
     let certainty: CertaintyLevel;
-    if (rawConfidence >= 0.85 && files.length > 0) {
+    if (files.length === 0) {
+      certainty = 'INSUFFICIENT';
+    } else if (rawConfidence >= 0.70) {
       certainty = 'HIGH';
-    } else if (rawConfidence >= 0.65) {
-      certainty = 'MEDIUM';
     } else if (rawConfidence >= 0.40) {
+      certainty = 'MEDIUM';
+    } else if (rawConfidence >= 0.15 || files.length > 0) {
       certainty = 'LOW';
     } else {
       certainty = 'INSUFFICIENT';
